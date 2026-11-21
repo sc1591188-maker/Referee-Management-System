@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RefAssign | Referee Allocation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- Top navbar -->
+  <header class="topbar">
+    <a class="brand" href="#dashboard">RefAssign</a>
+    <ul>
+      <li><a href="#dashboard">Home</a></li>
+      <li><button data-do="sample">Sample data</button></li>
+      <li><button data-do="reset">Reset</button></li>
+      <li><button data-do="rate">Rate Us</button></li>
+    </ul>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <ul>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#referees">Referees</a></li>
+      <li><a href="#availability">Availability</a></li>
+      <li><a href="#matches">Matches</a></li>
+      <li><a href="#assignments">Assignments</a></li>
+    </ul>
+  </aside>
+
+  <main>
+
+    <!-- 1. Dashboard -->
+    <section id="dashboard" class="page">
+      <div class="hero">
+        <h1><span>Organizing a match?</span> <span class="line2">Don't worry.</span></h1>
+        <p>Assign referees, avoid clashes and keep every change on record, all from one desk.</p>
+        <a class="btn primary" href="#assignments">Assign a referee</a>
+      </div>
+
+      <div class="cards">
+        <div class="card"><b id="statReferees">0</b><span>Referees</span></div>
+        <div class="card"><b id="statMatches">0</b><span>Matches</span></div>
+        <div class="card"><b id="statAssigned">0</b><span>Assigned</span></div>
+        <div class="card"><b id="statUnassigned">0</b><span>Unassigned</span></div>
+        <div class="card"><b id="statUpcoming">0</b><span>Upcoming</span></div>
+      </div>
+
+      <div class="two-columns">
+        <div class="panel">
+          <h2>Recent assignments</h2>
+          <ul id="recentList" class="list"></ul>
+          <p id="recentEmpty" class="muted">No assignments yet. Load sample data or assign a referee.</p>
+        </div>
+        <div class="panel">
+          <h2>Scheduling warnings</h2>
+          <ul id="warnList" class="list warn"></ul>
+          <p id="warnEmpty" class="muted">No warnings. Every match is covered.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Referees -->
+    <section id="referees" class="page">
+      <div class="page-head">
+        <div>
+          <h1>Referees</h1>
+          <p>Profiles, specialisations and status.</p>
+        </div>
+        <button class="btn primary" data-do="addRef">Add referee</button>
+      </div>
+      <div class="toolbar">
+        <input id="refSearch" type="search" placeholder="Search name, ID or contact" aria-label="Search referees">
+        <select id="refSport" aria-label="Filter by sport">
+          <option value="">All sports</option>
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Cricket</option>
+          <option>Volleyball</option>
+          <option>Badminton</option>
+          <option>Hockey</option>
+        </select>
+        <select id="refStatus" aria-label="Filter by status">
+          <option value="">Any status</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+      <div class="table-wrap" id="refTable">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Contact</th>
+              <th>Sport</th>
+              <th>Experience</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="refRows"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="refEmpty">
+        <h3>No referees found</h3>
+        <p>Add a referee, or load sample data from the top bar.</p>
+      </div>
+    </section>
+
+    <!-- 3. Availability -->
+    <section id="availability" class="page">
+      <div class="page-head">
+        <div>
+          <h1>Availability</h1>
+          <p>When each referee can officiate.</p>
+        </div>
+        <button class="btn primary" data-do="addAv">Add availability</button>
+      </div>
+      <div class="toolbar">
+        <input id="avSearch" type="search" placeholder="Search referee name or ID" aria-label="Search availability">
+        <input id="avDate" type="date" aria-label="Filter by date">
+      </div>
+      <div class="table-wrap" id="avTable">
+        <table>
+          <thead>
+            <tr>
+              <th>Referee</th>
+              <th>Date</th>
+              <th>From</th>
+              <th>Until</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="avRows"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="avEmpty">
+        <h3>No availability found</h3>
+        <p>Record the hours each referee can work.</p>
+      </div>
+    </section>
+
+    <!-- 4. Matches -->
+    <section id="matches" class="page">
+      <div class="page-head">
+        <div>
+          <h1>Matches</h1>
+          <p>The tournament schedule.</p>
+        </div>
+        <button class="btn primary" data-do="addMatch">Add match</button>
+      </div>
+      <div class="toolbar">
+        <input id="matchSearch" type="search" placeholder="Search ID, team or venue" aria-label="Search matches">
+        <select id="matchSport" aria-label="Filter by sport">
+          <option value="">All sports</option>
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Cricket</option>
+          <option>Volleyball</option>
+          <option>Badminton</option>
+          <option>Hockey</option>
+        </select>
+        <select id="matchStatus" aria-label="Filter by status">
+          <option value="">Any status</option>
+          <option>Assigned</option>
+          <option>Unassigned</option>
+          <option>Completed</option>
+          <option>Cancelled</option>
+        </select>
+      </div>
+      <div class="table-wrap" id="matchTable">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Sport</th>
+              <th>Teams</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Venue</th>
+              <th>Referee</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="matchRows"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="matchEmpty">
+        <h3>No matches found</h3>
+        <p>Add a match to start scheduling.</p>
+      </div>
+    </section>
+
+    <!-- 5. Assignments -->
+    <section id="assignments" class="page">
+      <div class="page-head">
+        <div>
+          <h1>Assignments</h1>
+          <p>Assign referees and review the history.</p>
+        </div>
+        <button class="btn primary" data-do="autoAssign">Auto assign</button>
+      </div>
+
+      <div class="panel">
+        <h2>Assign a referee</h2>
+        <form id="assignForm" class="inline-form" novalidate>
+          <label>Match <select id="assignMatch"></select></label>
+          <label>Referee <select id="assignRef"></select></label>
+          <button class="btn primary">Assign</button>
+          <p class="error" id="assignError" role="alert"></p>
+        </form>
+      </div>
+
+      <h2 class="section-title">Current assignments</h2>
+      <div class="table-wrap" id="currentTable">
+        <table>
+          <thead>
+            <tr>
+              <th>Match</th>
+              <th>When</th>
+              <th>Referee</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="currentRows"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="currentEmpty">
+        <h3>No current assignments</h3>
+        <p>Assigned referees will show up here.</p>
+      </div>
+
+      <h2 class="section-title">Assignment history</h2>
+      <div class="toolbar">
+        <input id="histSearch" type="search" placeholder="Search referee or match" aria-label="Search history">
+        <select id="histStatus" aria-label="Filter by status">
+          <option value="">Any status</option>
+          <option>Active</option>
+          <option>Reassigned</option>
+          <option>Cancelled</option>
+        </select>
+        <input id="histDate" type="date" aria-label="Filter by match date">
+      </div>
+      <div class="table-wrap" id="histTable">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Match</th>
+              <th>Referee</th>
+              <th>Match date</th>
+              <th>Assigned</th>
+              <th>Status</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody id="histRows"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="histEmpty">
+        <h3>No history yet</h3>
+        <p>Every assignment, reassignment and cancellation is recorded here.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Dialog: referee form -->
+  <dialog id="refDialog">
+    <h2 class="dialog-title"></h2>
+    <form id="refForm" novalidate>
+      <input type="hidden" name="editing">
+      <label>Referee ID <input name="id"></label>
+      <label>Full name <input name="name"></label>
+      <label>Email or phone <input name="contact"></label>
+      <label>Sport
+        <select name="sport">
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Cricket</option>
+          <option>Volleyball</option>
+          <option>Badminton</option>
+          <option>Hockey</option>
+        </select>
+      </label>
+      <label>Experience (years) <input name="exp" type="number" min="0"></label>
+      <label>Status <select name="active">
+          <option value="1">Active</option>
+          <option value="0">Inactive</option>
+        </select></label>
+      <p class="error" role="alert"></p>
+      <div class="dialog-buttons">
+        <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+        <button class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: availability form -->
+  <dialog id="avDialog">
+    <h2 class="dialog-title"></h2>
+    <form id="avForm" novalidate>
+      <input type="hidden" name="editing">
+      <input type="hidden" name="id">
+      <label>Referee <select name="refId" id="avRefSelect"></select></label>
+      <label>Date <input name="date" type="date"></label>
+      <label>Available from <input name="start" type="time"></label>
+      <label>Available until <input name="end" type="time"></label>
+      <p class="error" role="alert"></p>
+      <div class="dialog-buttons">
+        <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+        <button class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: match form -->
+  <dialog id="matchDialog">
+    <h2 class="dialog-title"></h2>
+    <form id="matchForm" novalidate>
+      <input type="hidden" name="editing">
+      <label>Match ID <input name="id"></label>
+      <label>Sport
+        <select name="sport">
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Cricket</option>
+          <option>Volleyball</option>
+          <option>Badminton</option>
+          <option>Hockey</option>
+        </select>
+      </label>
+      <label>Team A <input name="a"></label>
+      <label>Team B <input name="b"></label>
+      <label>Date <input name="date" type="date"></label>
+      <label>Start time <input name="start" type="time"></label>
+      <label>End time <input name="end" type="time"></label>
+      <label>Venue <input name="venue"></label>
+      <label>State <select name="state">
+          <option value="0">Scheduled</option>
+          <option value="1">Cancelled</option>
+        </select></label>
+      <p class="error" role="alert"></p>
+      <div class="dialog-buttons">
+        <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+        <button class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: reassign -->
+  <dialog id="reassignDialog">
+    <h2 class="dialog-title">Reassign referee</h2>
+    <form id="reassignForm" novalidate>
+      <input type="hidden" name="matchId">
+      <p id="reassignMatchName" class="muted"></p>
+      <label>New referee <select name="refId" id="reassignSelect"></select></label>
+      <p class="error" role="alert"></p>
+      <div class="dialog-buttons">
+        <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+        <button class="btn primary">Reassign</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: rate us (5 stars) -->
+  <dialog id="rateDialog">
+    <h2 class="dialog-title">Rate us</h2>
+    <form id="rateForm" novalidate>
+      <p id="rateLabel" class="muted">How was your experience with RefAssign?</p>
+      <!-- Stars are listed 5 to 1; CSS shows them 1 to 5 and colours the chosen ones -->
+      <div class="stars" role="radiogroup" aria-labelledby="rateLabel">
+        <input type="radio" name="rating" id="star5" value="5"><label for="star5" title="5 stars"><span
+            class="sr-only">5 stars</span>&#9733;</label>
+        <input type="radio" name="rating" id="star4" value="4"><label for="star4" title="4 stars"><span
+            class="sr-only">4 stars</span>&#9733;</label>
+        <input type="radio" name="rating" id="star3" value="3"><label for="star3" title="3 stars"><span
+            class="sr-only">3 stars</span>&#9733;</label>
+        <input type="radio" name="rating" id="star2" value="2"><label for="star2" title="2 stars"><span
+            class="sr-only">2 stars</span>&#9733;</label>
+        <input type="radio" name="rating" id="star1" value="1"><label for="star1" title="1 star"><span class="sr-only">1
+            star</span>&#9733;</label>
+      </div>
+      <p class="error" role="alert"></p>
+      <div class="dialog-buttons">
+        <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+        <button class="btn primary">Submit</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dialog: confirm -->
+  <dialog id="confirmDialog">
+    <h2 class="dialog-title">Please confirm</h2>
+    <p id="confirmText"></p>
+    <div class="dialog-buttons">
+      <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+      <button type="button" class="btn danger" data-do="confirmYes">Confirm</button>
+    </div>
+  </dialog>
+
+  <!-- Dialog: auto assign review -->
+  <dialog id="autoDialog">
+    <h2 class="dialog-title">Auto assign: review</h2>
+    <p class="muted">Referees with the fewest assignments are chosen first. Nothing is saved until you confirm.</p>
+    <div class="table-wrap" id="autoTable">
+      <table>
+        <thead>
+          <tr>
+            <th>Match</th>
+            <th>When</th>
+            <th>Referee</th>
+          </tr>
+        </thead>
+        <tbody id="autoRows"></tbody>
+      </table>
+    </div>
+    <div id="autoFail">
+      <h3>No eligible referee</h3>
+      <ul id="autoFailList" class="list warn"></ul>
+    </div>
+    <div class="dialog-buttons">
+      <button type="button" class="btn" data-do="closeDialog">Cancel</button>
+      <button type="button" class="btn primary" id="autoOkBtn" data-do="autoOk">Confirm all</button>
+    </div>
+  </dialog>
+
+  <div id="toasts" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>
